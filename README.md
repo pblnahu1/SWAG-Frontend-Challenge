@@ -90,7 +90,7 @@ Sorpréndenos con mejoras que creas importantes:
 - 🐛 **Bugs corregidos:** 5 puntos cada uno (max 40 pts)
 - 🛠️ **Funcionalidades:** 10 puntos cada una (max 40 pts)  
 - 🎨 **Creatividad:** Hasta 20 puntos extra
-- ⚡ **Velocidad:** Bonus por completar en < 60 minutos
+- ⚡ **Velocidad:** Bonus por completarlo en la ventana de tiempo asignada
 
 ### **Criterios de Evaluación:**
 1. **Funcionamiento:** ¿La aplicación corre sin errores?
