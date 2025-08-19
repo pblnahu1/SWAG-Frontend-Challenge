@@ -186,16 +186,16 @@ Sorpréndenos con mejoras que creas importantes:
 
 Agradecemos tu postulación para el cargo de Desarrollador/a Front-end en SWAG. Debido a la gran cantidad de postulaciones y a la urgencia de nuestro proceso, hemos diseñado este desafío técnico para evaluar de forma rápida y justa a todos los candidatos.
 
-## Sobre el Desafío
+**Sobre el Desafío**
 Entendemos que este desafío es más extenso de lo habitual. Lo hemos creado para evaluar tus habilidades de resolución de problemas en un entorno realista. Queremos ser transparentes contigo:
 
-## Propósito:
+**Propósito:**
 Es una prueba diseñada exclusivamente para este proceso. El objetivo es que demuestres tus capacidades en un proyecto que simula las condiciones de trabajo que encontrarás con nosotros.
 
-## Ética y Respeto:
+**Ética y Respeto:**
 Valoramos y respetamos tu tiempo y trabajo. El código que desarrolles será revisado únicamente con fines de evaluación y bajo ninguna circunstancia se utilizará en nuestro producto final.
 
-## Flujo del proceso:
+**Flujo del proceso:**
 - Envías tu solución.
 - Nuestro sistema la evalúa de forma automática y te envía un correo con tu puntaje.
 - Si tu puntaje es excepcional, te contactaremos para agendar una entrevista por video.
