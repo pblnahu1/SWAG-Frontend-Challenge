@@ -10,6 +10,9 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('name')
+  const [selectedSupplier, setSelectedSupplier] = useState('all')
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000])
+
 
   // Filter and sort products based on criteria
   const filterProducts = (category: string, search: string, sort: string) => {
@@ -22,9 +25,12 @@ const ProductList = () => {
 
     // Search filter
     if (search) {
-      filtered = filtered.filter(product => 
-        product.name.includes(search) ||
-        product.sku.includes(search)
+      const normalizeText = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
+      const query = normalizeText(search);
+
+      filtered = filtered.filter(product =>
+        normalizeText(product.name).includes(query) ||
+        normalizeText(product.sku).includes(query)
       )
     }
 
@@ -35,6 +41,7 @@ const ProductList = () => {
         break
       case 'price':
         // Price sorting to implement
+        filtered.sort((a, b) => a.price! - b.price!) //dado a que como es oppcinoal le digo que siempre tenga valor
         break
       case 'stock':
         filtered.sort((a, b) => b.stock - a.stock)
@@ -61,6 +68,24 @@ const ProductList = () => {
     filterProducts(selectedCategory, searchQuery, sort)
   }
 
+  const handleSupplierChange = (supplier: string) => {
+    setSelectedSupplier(supplier)
+    filterProducts(selectedCategory, searchQuery, sortBy)
+  }
+
+  const handlePriceRangeChange = (range: [number, number]) => {
+    setPriceRange(range)
+    filterProducts(selectedCategory, searchQuery, sortBy)
+  }
+
+  const handleClearFilters = () => {
+    setSelectedCategory('all')
+    setSearchQuery('')
+    setSelectedSupplier('all')
+    setPriceRange([0, 1000000])
+    filterProducts('all', '', sortBy)
+  }
+
   return (
     <div className="product-list-page">
       <div className="container">
@@ -72,7 +97,7 @@ const ProductList = () => {
               Descubre nuestra selección de productos promocionales premium
             </p>
           </div>
-          
+
           <div className="page-stats">
             <div className="stat-item">
               <span className="stat-value p1-medium">{filteredProducts.length}</span>
@@ -90,10 +115,16 @@ const ProductList = () => {
           selectedCategory={selectedCategory}
           searchQuery={searchQuery}
           sortBy={sortBy}
+          selectedSupplier={selectedSupplier}
+          priceRange={priceRange}
           onCategoryChange={handleCategoryChange}
           onSearchChange={handleSearchChange}
           onSortChange={handleSortChange}
+          onSupplierChange={handleSupplierChange}
+          onPriceRangeChange={handlePriceRangeChange}
+          onClearFilters={handleClearFilters}
         />
+
 
         {/* Products Grid */}
         <div className="products-section">
@@ -102,7 +133,7 @@ const ProductList = () => {
               <span className="material-icons">search_off</span>
               <h3 className="h2">No hay productos</h3>
               <p className="p1">No se encontraron productos que coincidan con tu búsqueda.</p>
-              <button 
+              <button
                 className="btn btn-primary cta1"
                 onClick={() => {
                   setSearchQuery('')

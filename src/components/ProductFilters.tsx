@@ -5,18 +5,29 @@ interface ProductFiltersProps {
   selectedCategory: string
   searchQuery: string
   sortBy: string
+  selectedSupplier: string;
+  priceRange: [number, number];
   onCategoryChange: (category: string) => void
   onSearchChange: (search: string) => void
   onSortChange: (sort: string) => void
+  onSupplierChange: (supplier: string) => void;
+  onPriceRangeChange: (range: [number, number]) => void;
+  onClearFilters: () => void;
 }
 
 const ProductFilters = ({
   selectedCategory,
   searchQuery,
   sortBy,
+  selectedSupplier,
+  priceRange = [0, 1000000],
   onCategoryChange,
   onSearchChange,
-  onSortChange
+  onSortChange,
+  onSupplierChange,
+  onPriceRangeChange,
+  onClearFilters
+
 }: ProductFiltersProps) => {
   return (
     <div className="product-filters">
@@ -33,7 +44,7 @@ const ProductFilters = ({
               className="search-input p1"
             />
             {searchQuery && (
-              <button 
+              <button
                 className="clear-search"
                 onClick={() => onSearchChange('')}
               >
@@ -61,11 +72,50 @@ const ProductFilters = ({
           </div>
         </div>
 
+        {/* Supplier Filters */}
+        <div className="filter-section">
+          <h3 className="filter-title p1-medium">Proveedores</h3>
+          <div className="supplier-list">
+            {suppliers.map(supplier => (
+              <button
+                key={supplier.id}
+                className={`supplier-item ${selectedSupplier === supplier.id ? 'active' : ''}`}
+                onClick={() => onSupplierChange(supplier.id)}
+              >
+                <span className="supplier-name l1">{supplier.name}</span>
+                <span className="supplier-count l1">{supplier.products}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Price Range */}
+        <div className="filter-section">
+          <h3 className="filter-title p1-medium">Rango de Precios</h3>
+          <div className="price-range">
+            <input
+              type="number"
+              value={priceRange[0]}
+              onChange={(e) => onPriceRangeChange([Number(e.target.value), priceRange[1]])}
+              className="price-input"
+              placeholder="Min"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              value={priceRange[1]}
+              onChange={(e) => onPriceRangeChange([priceRange[0], Number(e.target.value)])}
+              className="price-input"
+              placeholder="Max"
+            />
+          </div>
+        </div>
+
         {/* Sort Options */}
         <div className="filter-section">
           <h3 className="filter-title p1-medium">Ordenar por</h3>
-          <select 
-            value={sortBy} 
+          <select
+            value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
             className="sort-select p1"
           >
@@ -75,17 +125,11 @@ const ProductFilters = ({
           </select>
         </div>
 
-        {/* Quick Stats - Bug: hardcoded values instead of dynamic */}
+        {/* Clear All */}
         <div className="filter-section">
-          <h3 className="filter-title p1-medium">Proveedores</h3>
-          <div className="supplier-list">
-            {suppliers.map(supplier => (
-              <div key={supplier.id} className="supplier-item">
-                <span className="supplier-name l1">{supplier.name}</span>
-                <span className="supplier-count l1">{supplier.products}</span>
-              </div>
-            ))}
-          </div>
+          <button className="clear-filters-btn p1" onClick={onClearFilters}>
+            Limpiar todos los filtros
+          </button>
         </div>
       </div>
     </div>

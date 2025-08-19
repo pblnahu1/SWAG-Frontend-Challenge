@@ -1,3 +1,5 @@
+// solo toma el ultimo break valido pero no el mejor descuento: mejorarlo para que lo encuentre
+
 import { useState } from 'react'
 import { Product } from '../types/Product'
 import './PricingCalculator.css'
@@ -16,15 +18,23 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
       return product.basePrice * qty
     }
 
-    // Find applicable price break
-    let applicableBreak = product.priceBreaks[0]
-    for (let i = 0; i < product.priceBreaks.length; i++) {
-      if (qty >= product.priceBreaks[i].minQty) {
-        applicableBreak = product.priceBreaks[i]
-      }
-    }
+    const applicableBreaks = product.priceBreaks.filter(b => qty >= b.minQty); // filtrado
 
-    return applicableBreak.price * qty
+    // elijo el break con el precio unitario más bajo
+    const bestBreak = applicableBreaks.length > 0 ? applicableBreaks.reduce((prev, curr) => curr.price < prev.price ? curr : prev) : null;
+
+    // Find applicable price break
+    // let applicableBreak = product.priceBreaks[0]
+    // for (let i = 0; i < product.priceBreaks.length; i++) {
+    //   if (qty >= product.priceBreaks[i].minQty) {
+    //     applicableBreak = product.priceBreaks[i]
+    //   }
+    // }
+
+    // return applicableBreak.price * qty
+
+    const unitPrice = bestBreak ? bestBreak.price : product.basePrice;
+    return unitPrice * qty;
   }
 
   // Calculate discount amount
@@ -35,14 +45,19 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
 
     const baseTotal = product.basePrice * qty
     const discountedTotal = calculatePrice(qty)
-    
+
     // Calculate savings percentage
     return ((baseTotal - discountedTotal) / baseTotal) * 100
   }
 
   // Format price display
   const formatPrice = (price: number) => {
-    return `$${price.toLocaleString()}` // Should be CLP formatting
+    //return `$${price.toLocaleString()}` // Should be CLP formatting: solo pone separador de miles ,no CLP
+    return new Intl.NumberFormat("es-CL",{
+      style: "currency",
+      currency: "CLP",
+      minimumFractionDigits: 0
+    }).format(price);
   }
 
   const currentPrice = calculatePrice(quantity)
@@ -82,9 +97,9 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
               {product.priceBreaks.map((priceBreak, index) => {
                 const isActive = quantity >= priceBreak.minQty
                 const isSelected = selectedBreak === index
-                
+
                 return (
-                  <div 
+                  <div
                     key={index}
                     className={`price-break ${isActive ? 'active' : ''} ${isSelected ? 'selected' : ''}`}
                     onClick={() => {
@@ -118,7 +133,7 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
               {formatPrice(calculatePrice(quantity) / quantity)}
             </span>
           </div>
-          
+
           <div className="summary-row">
             <span className="summary-label p1">Cantidad:</span>
             <span className="summary-value p1-medium">{quantity} unidades</span>
@@ -143,7 +158,7 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
 
         {/* Actions */}
         <div className="calculator-actions">
-          <button 
+          <button
             className="btn btn-secondary cta1"
             onClick={() => {
               // Handle quote request
@@ -153,8 +168,8 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
             <span className="material-icons">email</span>
             Solicitar cotización oficial
           </button>
-          
-          <button 
+
+          <button
             className="btn btn-primary cta1"
             onClick={() => {
               // Add to cart functionality
@@ -175,7 +190,7 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
               <span className="info-detail l1">En pedidos sobre $50.000</span>
             </div>
           </div>
-          
+
           <div className="info-item">
             <span className="material-icons">schedule</span>
             <div className="info-content">
@@ -183,7 +198,7 @@ const PricingCalculator = ({ product }: PricingCalculatorProps) => {
               <span className="info-detail l1">7-10 días hábiles</span>
             </div>
           </div>
-          
+
           <div className="info-item">
             <span className="material-icons">verified</span>
             <div className="info-content">
